@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: "https://pollr-tcvr.onrender.com/api",
 });
 
 // Voter token for duplicate vote prevention (no login required)
