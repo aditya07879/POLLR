@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import FAQ from '../components/FAQ';
 
 /* ── tiny hook: intersection observer for scroll reveals ── */
 function useReveal() {
@@ -197,6 +198,7 @@ export default function Home() {
             <a href="#features" className="home-nav-link">Features</a>
             <a href="#how"      className="home-nav-link">How it works</a>
             <a href="#love"     className="home-nav-link">Testimonials</a>
+            <a href="#faq" className="home-nav-link">FAQ</a>
             {user ? (
               <Link to="/dashboard" className="home-nav-link">Dashboard</Link>
             ) : (
@@ -434,6 +436,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <FAQ />
 
       {/* ── CTA BAND ── */}
       <section className="home-cta-section">
