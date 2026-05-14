@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,7 +22,7 @@ export default function Navbar() {
         </Link>
 
         <div className="nav-links">
-          {user ? (
+          {loading ? null : user ? (
             <>
               <Link
                 to="/dashboard"

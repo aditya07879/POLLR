@@ -197,8 +197,16 @@ export default function Home() {
             <a href="#features" className="home-nav-link">Features</a>
             <a href="#how"      className="home-nav-link">How it works</a>
             <a href="#love"     className="home-nav-link">Testimonials</a>
-            <Link to="/signin"  className="home-nav-link">Login</Link>
-            <Link to="/signup" className="home-nav-cta">Get started free →</Link>
+            {user ? (
+              <Link to="/dashboard" className="home-nav-link">Dashboard</Link>
+            ) : (
+              <Link to="/signin" className="home-nav-link">Login</Link>
+            )}
+            {user ? (
+              <Link to="/create" className="home-nav-cta">Create poll →</Link>
+            ) : (
+              <Link to="/signup" className="home-nav-cta">Get started free →</Link>
+            )}
           </div>
         </div>
       </nav>
@@ -237,13 +245,22 @@ export default function Home() {
           </p>
 
           <div className="home-hero-actions">
-            <Link to="/signup" className="home-btn-hero">
-              Start polling for free
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-              </svg>
-            </Link>
-            <Link to="/signin" className="home-btn-ghost">Sign in</Link>
+            {user ? (
+              <Link to="/dashboard" className="home-btn-hero">
+                Go to Dashboard
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </Link>
+            ) : (
+              <Link to="/signup" className="home-btn-hero">
+                Start polling for free
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </Link>
+            )}
+            {!user && <Link to="/signin" className="home-btn-ghost">Sign in</Link>}
           </div>
 
           <div className="home-hero-trust">
@@ -455,9 +472,14 @@ export default function Home() {
             </div>
             <div className="home-footer-col">
               <div className="home-footer-col-title">Account</div>
-              <Link to="/signin"   className="home-footer-link">Login</Link>
-              <Link to="/signup"  className="home-footer-link">Register</Link>
-              <Link to="/dashboard" className="home-footer-link">Dashboard</Link>
+              {user ? (
+                <Link to="/dashboard" className="home-footer-link">Dashboard</Link>
+              ) : (
+                <>
+                  <Link to="/signin"  className="home-footer-link">Login</Link>
+                  <Link to="/signup"  className="home-footer-link">Register</Link>
+                </>
+              )}
             </div>
           </div>
         </div>
