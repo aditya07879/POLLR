@@ -2,18 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
-/* ── visitor counter via CounterAPI (free, no signup) ── */
-function useVisitorCount() {
-  const [count, setCount] = useState(null);
-  useEffect(() => {
-    fetch("https://api.counterapi.dev/v1/pollr-aditya-2026/visitors/up")
-      .then(r => r.json())
-      .then(d => setCount(d.count))
-      .catch(() => setCount(null));
-  }, []);
-  return count;
-}
-
 /* ── tiny hook: intersection observer for scroll reveals ── */
 function useReveal() {
   const ref = useRef(null);
@@ -192,7 +180,8 @@ export default function Home() {
   const { user } = useAuth();
   const navigate  = useNavigate();
   const [heroRef, heroVisible] = useReveal();
-  const visitorCount = useVisitorCount();
+
+ 
 
   return (
     <div className="home-root">
@@ -224,7 +213,9 @@ export default function Home() {
 
       {/* ── HERO ── */}
       <section className="home-hero">
+        {/* background grid */}
         <div className="home-grid-bg" aria-hidden />
+        {/* orbs */}
         <div className="home-orb home-orb-1" aria-hidden />
         <div className="home-orb home-orb-2" aria-hidden />
 
@@ -237,6 +228,7 @@ export default function Home() {
             transition: "opacity .8s ease, transform .8s ease",
           }}
         >
+          {/* eyebrow */}
           <div className="home-eyebrow">
             <span className="home-eyebrow-dot" />
             Real-time polling platform for 2026
@@ -283,6 +275,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Demo card floats below headline */}
         <div className="home-hero-demo">
           <LivePollCard />
         </div>
@@ -435,9 +428,9 @@ export default function Home() {
           <div className="home-section-label">Testimonials</div>
           <h2 className="home-section-title">Teams love Pollr</h2>
           <div className="home-testimonials">
-            <Testimonial delay={0}   avatar="PG" name="Piyush Garg"        role="Engineering Principal Engineer, Oraczen"       quote="We run weekly team polls for retros and sprint planning. Results show up before everyone's even voted — it's magic." />
-            <Testimonial delay={100} avatar="HC" name="Hitesh Chaudhary"   role="CEO, ChaiCode"                                 quote="I've tried every polling tool. Pollr is the only one that doesn't feel like a form from 2012. The live bar animations are Best" />
-            <Testimonial delay={200} avatar="A"  name="Anirudh"            role="CTO, Raycast"                                  quote="Set up a company-wide poll in 30 seconds. 400 votes in the first hour. The countdown timer keeps urgency high." />
+            <Testimonial delay={0}   avatar="PG" name="Piyush Garg"        role="Engineering Principal Engineer, Oraczen "       quote="We run weekly team polls for retros and sprint planning. Results show up before everyone's even voted — it's magic." />
+            <Testimonial delay={100} avatar="HC" name="Hitesh Chaudhary"     role="CEO , ChaiCode"              quote="I've tried every polling tool. Pollr is the only one that doesn't feel like a form from 2012. The live bar animations are Best" />
+            <Testimonial delay={200} avatar="A" name="Anirudh"       role="CTO, Raycast"                      quote="Set up a company-wide poll in 30 seconds. 400 votes in the first hour. The countdown timer keeps urgency high." />
           </div>
         </div>
       </section>
@@ -492,25 +485,6 @@ export default function Home() {
         </div>
         <div className="home-footer-bottom">
           <span>© 2026 Pollr. Built By ADITYA TOMAR for ChaiCode Hackathon.</span>
-          {visitorCount !== null && (
-            <span style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              fontSize: 12,
-              color: "var(--text-dim)",
-              fontFamily: "var(--mono)",
-            }}>
-              <span style={{
-                width: 6, height: 6,
-                borderRadius: "50%",
-                background: "var(--green)",
-                display: "inline-block",
-                animation: "live-pulse 2s infinite",
-              }} />
-              {visitorCount.toLocaleString()} visitors
-            </span>
-          )}
         </div>
       </footer>
 
