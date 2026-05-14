@@ -52,8 +52,14 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/signin" className="nav-link">Login</Link>
-              <Link to="/signup" className="btn btn-primary" style={{ fontSize: 13, padding: "6px 16px" }}>
+              <Link
+                to="/dashboard"
+                className="nav-link"
+                style={isActive("/dashboard") ? { color: "var(--text)", background: "var(--bg2)" } : {}}
+              >
+                Dashboard
+              </Link>
+              <Link to="/create" className="btn btn-primary" style={{ fontSize: 13, padding: "6px 16px" }}>
                 Get Started
               </Link>
             </>
