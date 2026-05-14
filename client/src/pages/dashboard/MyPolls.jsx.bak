@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import DeleteConfirmModal from "./DeleteConfirmModal"; // ← new import
 
 function Skeleton({ h = 20, r = 10 }) {
   return <div style={{ width: "100%", height: h, borderRadius: r, background: "rgba(255,255,255,.06)", animation: "shimmer 1.6s linear infinite", backgroundImage: "linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.04) 75%)", backgroundSize: "200% 100%" }} />;
@@ -10,10 +9,6 @@ export default function MyPolls({ polls, loading, onDelete }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
-
-  // ── Delete modal state (replaces native confirm) ──────────
-  const [deleteTarget, setDeleteTarget] = useState(null); // { id, question }
-
   const navigate = useNavigate();
 
   const totalVotes = (poll) => poll.options.reduce((s, o) => s + o.votes, 0);
@@ -32,23 +27,6 @@ export default function MyPolls({ polls, loading, onDelete }) {
       return 0;
     });
 
-  // ── Handlers ──────────────────────────────────────────────
-  const handleDeleteClick = (poll) => {
-    // Show custom modal instead of window.confirm()
-    setDeleteTarget({ id: poll._id, question: poll.question });
-  };
-
-  const handleDeleteConfirm = () => {
-    if (deleteTarget) {
-      onDelete(deleteTarget.id); // same call as before — zero logic change
-    }
-    setDeleteTarget(null);
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteTarget(null);
-  };
-
   if (loading) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -60,14 +38,6 @@ export default function MyPolls({ polls, loading, onDelete }) {
 
   return (
     <div className="mp-root">
-      {/* ── Custom delete confirmation modal ── */}
-      <DeleteConfirmModal
-        isOpen={!!deleteTarget}
-        pollName={deleteTarget?.question}
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
-      />
-
       {/* Header */}
       <div className="mp-header">
         <div>
@@ -173,10 +143,9 @@ export default function MyPolls({ polls, loading, onDelete }) {
                   }}>
                     Copy Link
                   </button>
-                  {/* ← Only this line changed: was onDelete(poll._id), now opens modal */}
-                  <button className="mp-act-btn delete" onClick={() => onDelete(poll._id, poll.question)}>
-  Delete
-</button>
+                  <button className="mp-act-btn delete" onClick={() => onDelete(poll._id)}>
+                    Delete
+                  </button>
                 </div>
               </div>
             );

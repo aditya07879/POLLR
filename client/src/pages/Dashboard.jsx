@@ -7,6 +7,7 @@ import Overview from "./dashboard/Overview.jsx";
 import MyPolls from "./dashboard/MyPolls.jsx";
 import Analytics from "./dashboard/Analytics.jsx";
 import Insights from "./dashboard/Insights.jsx";
+import DeleteConfirmModal from "./dashboard/DeleteConfirmModal";
 
 /* ── Sidebar shared component ──────────────────────────── */
 function SidebarContent({ sidebarOpen, activeNav, setActiveNav, user, logout, navigate, polls, navItems }) {
@@ -83,13 +84,16 @@ export default function Dashboard() {
     finally { setLoading(false); }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this poll? This cannot be undone.")) return;
-    try {
-      await api.delete(`/polls/${id}`);
-      setPolls(p => p.filter(x => x._id !== id));
-    } catch (err) { alert(err.response?.data?.message || "Failed to delete poll"); }
-  };
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+const handleDeleteConfirm = async () => {
+  if (!deleteTarget) return;
+  try {
+    await api.delete(`/polls/${deleteTarget.id}`);
+    setPolls(p => p.filter(x => x._id !== deleteTarget.id));
+  } catch (err) { alert(err.response?.data?.message || "Failed to delete poll"); }
+  finally { setDeleteTarget(null); }
+};
 
   const navItems = [
     { id: "overview", icon: "⬡", label: "Overview", badge: null },
@@ -113,7 +117,7 @@ export default function Dashboard() {
   const renderPage = () => {
     switch (activeNav) {
       case "overview":  return <Overview {...sharedProps} />;
-      case "polls":     return <MyPolls {...sharedProps} onDelete={handleDelete} />;
+      case "polls": return <MyPolls {...sharedProps} onDelete={(id, question) => setDeleteTarget({ id, question })} />;
       case "analytics": return <Analytics {...sharedProps} />;
       case "insights":  return <Insights {...sharedProps} />;
       default:          return <Overview {...sharedProps} />;
@@ -444,6 +448,12 @@ export default function Dashboard() {
       `}</style>
 
       <div className="dash-shell">
+        <DeleteConfirmModal
+    isOpen={!!deleteTarget}
+    pollName={deleteTarget?.question}
+    onConfirm={handleDeleteConfirm}
+    onCancel={() => setDeleteTarget(null)}
+  />
         <div className="dash-blob db1" />
         <div className="dash-blob db2" />
         <div className="dash-blob db3" />
