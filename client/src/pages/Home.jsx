@@ -429,7 +429,7 @@ export default function Home() {
           <h2 className="home-section-title">Teams love Pollr</h2>
           <div className="home-testimonials">
             <Testimonial delay={0}   avatar="PG" name="Piyush Garg"        role="Engineering Principal Engineer, Oraczen "       quote="We run weekly team polls for retros and sprint planning. Results show up before everyone's even voted — it's magic." />
-            <Testimonial delay={100} avatar="HC" name="Hitesh Chaudhary"     role="CEO , ChaiCode"              quote="I've tried every polling tool. Pollr is the only one that doesn't feel like a form from 2012. The live bar animations are 🔥" />
+            <Testimonial delay={100} avatar="HC" name="Hitesh Chaudhary"     role="CEO , ChaiCode"              quote="I've tried every polling tool. Pollr is the only one that doesn't feel like a form from 2012. The live bar animations are Amazing!" />
             <Testimonial delay={200} avatar="A" name="Anirudh"       role="CTO, Raycast"                      quote="Set up a company-wide poll in 30 seconds. 400 votes in the first hour. The countdown timer keeps urgency high." />
           </div>
         </div>
