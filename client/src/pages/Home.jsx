@@ -428,9 +428,9 @@ export default function Home() {
           <div className="home-section-label">Testimonials</div>
           <h2 className="home-section-title">Teams love Pollr</h2>
           <div className="home-testimonials">
-            <Testimonial delay={0}   avatar="SK" name="Sara Kim"        role="Engineering Manager, Vercel"       quote="We run weekly team polls for retros and sprint planning. Results show up before everyone's even voted — it's magic." />
-            <Testimonial delay={100} avatar="MR" name="Marco Rossi"     role="Product Lead, Linear"              quote="I've tried every polling tool. Pollr is the only one that doesn't feel like a form from 2012. The live bar animations are 🔥" />
-            <Testimonial delay={200} avatar="PL" name="Priya Lal"       role="CTO, Raycast"                      quote="Set up a company-wide poll in 30 seconds. 400 votes in the first hour. The countdown timer keeps urgency high." />
+            <Testimonial delay={0}   avatar="SK" name="Piyush Garg"        role="Engineering Principal Engineer, Oraczen "       quote="We run weekly team polls for retros and sprint planning. Results show up before everyone's even voted — it's magic." />
+            <Testimonial delay={100} avatar="MR" name="Hitesh Chaudhary"     role="CEO , ChaiCode"              quote="I've tried every polling tool. Pollr is the only one that doesn't feel like a form from 2012. The live bar animations are 🔥" />
+            <Testimonial delay={200} avatar="PL" name="Anirudh"       role="CTO, Raycast"                      quote="Set up a company-wide poll in 30 seconds. 400 votes in the first hour. The countdown timer keeps urgency high." />
           </div>
         </div>
       </section>
@@ -484,7 +484,7 @@ export default function Home() {
           </div>
         </div>
         <div className="home-footer-bottom">
-          <span>© 2026 Pollr. Built with ♥ for fast-moving teams.</span>
+          <span>© 2026 Pollr. Built By ADITYA TOMAR for ChaiCode Hackathon.</span>
         </div>
       </footer>
 
