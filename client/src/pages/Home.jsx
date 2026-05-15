@@ -118,21 +118,258 @@ function LivePollCard() {
   );
 }
 
-function FeatureCard({ icon, title, desc, delay = 0 }) {
-  const [ref, visible] = useReveal();
+function DemoVideoModal({ onClose }) {
+  const overlayRef = useRef(null);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   return (
     <div
-      ref={ref}
-      className="home-feat-card"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity .55s ${delay}ms ease, transform .55s ${delay}ms ease`,
+      ref={overlayRef}
+      className="demo-modal-overlay"
+      onClick={(e) => {
+        if (e.target === overlayRef.current) onClose();
       }}
+    >
+      <div className="demo-modal-box">
+        <button className="demo-modal-close" onClick={onClose} aria-label="Close demo">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+        <video className="demo-modal-video" src="/demo.mp4" autoPlay controls playsInline />
+      </div>
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, desc, isActive = false }) {
+  return (
+    <div
+      className={`home-feat-card home-feat-card-carousel${isActive ? " home-feat-card-active" : ""}`}
     >
       <div className="home-feat-icon">{icon}</div>
       <h3 className="home-feat-title">{title}</h3>
       <p className="home-feat-desc">{desc}</p>
+    </div>
+  );
+}
+
+function FeaturesCarousel() {
+  const FEATURES = [
+    {
+      icon: "⚡",
+      title: "Instant live results",
+      desc: "Votes appear in real-time via WebSockets. No page refresh, no polling interval — just live.",
+    },
+    {
+      icon: "🔗",
+      title: "One shareable link",
+      desc: "Every poll gets a clean slug-based URL. Share it anywhere — Slack, email, socials, QR.",
+    },
+    {
+      icon: "⏱",
+      title: "Automatic expiry",
+      desc: "Set a deadline and the poll closes itself. Results are preserved forever after.",
+    },
+    {
+      icon: "🛡",
+      title: "One vote per person",
+      desc: "Built-in duplicate vote prevention keeps results honest without requiring a login to vote.",
+    },
+    {
+      icon: "📊",
+      title: "Beautiful result bars",
+      desc: "Animated gradient bars, vote counts, percentages and a leading indicator — all at a glance.",
+    },
+    {
+      icon: "📱",
+      title: "Fully responsive",
+      desc: "Works perfectly on every screen size — mobile, tablet, desktop, and everything in between.",
+    },
+  ];
+
+  const LOOPED = [...FEATURES, ...FEATURES, ...FEATURES];
+
+  const trackRef = useRef(null);
+  const timerRef = useRef(null);
+  const isAnimatingRef = useRef(false);
+  const currentIdxRef = useRef(FEATURES.length);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const scrollToIdx = (loopedIdx, smooth = true) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.querySelectorAll(".home-feat-card-carousel")[loopedIdx];
+    if (!card) return;
+    const trackRect = track.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const targetScroll =
+      track.scrollLeft + cardRect.left - trackRect.left - (trackRect.width - cardRect.width) / 2;
+
+    if (smooth) {
+      isAnimatingRef.current = true;
+      track.scrollTo({ left: targetScroll, behavior: "smooth" });
+
+      setTimeout(() => {
+        isAnimatingRef.current = false;
+      }, 520);
+    } else {
+      track.scrollLeft = targetScroll;
+    }
+    setActiveIdx(loopedIdx % FEATURES.length);
+  };
+
+  const stepForward = () => {
+    if (isAnimatingRef.current) return;
+    let next = currentIdxRef.current + 1;
+    const total = LOOPED.length;
+
+    if (next >= FEATURES.length * 2) {
+      const jumpTo = next - FEATURES.length;
+      currentIdxRef.current = jumpTo;
+      scrollToIdx(jumpTo, false);
+
+      setTimeout(() => {
+        currentIdxRef.current = jumpTo + 1;
+        scrollToIdx(jumpTo + 1, true);
+      }, 30);
+    } else {
+      currentIdxRef.current = next;
+      scrollToIdx(next, true);
+    }
+  };
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (track) {
+      setTimeout(() => {
+        scrollToIdx(currentIdxRef.current, false);
+      }, 50);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isPaused) {
+      clearInterval(timerRef.current);
+      return;
+    }
+    timerRef.current = setInterval(() => {
+      stepForward();
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [isPaused]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+
+    const onMouseDown = (e) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartScroll = track.scrollLeft;
+      setIsPaused(true);
+      track.style.cursor = "grabbing";
+    };
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      track.scrollLeft = dragStartScroll + (dragStartX - e.clientX);
+    };
+    const onMouseUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.cursor = "grab";
+
+      const cards = track.querySelectorAll(".home-feat-card-carousel");
+      const trackRect = track.getBoundingClientRect();
+      const trackCenter = trackRect.left + trackRect.width / 2;
+      let closest = currentIdxRef.current;
+      let minDist = Infinity;
+      cards.forEach((card, i) => {
+        const rect = card.getBoundingClientRect();
+        const dist = Math.abs(rect.left + rect.width / 2 - trackCenter);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = i;
+        }
+      });
+      currentIdxRef.current = closest;
+      scrollToIdx(closest, true);
+      setTimeout(() => setIsPaused(false), 800);
+    };
+
+    track.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      track.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, []);
+
+  return (
+    <div
+      className="home-feat-carousel-wrapper"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setTimeout(() => setIsPaused(false), 800)}
+    >
+      <div className="home-feat-carousel-track" ref={trackRef}>
+        {LOOPED.map((f, i) => (
+          <FeatureCard
+            key={i}
+            icon={f.icon}
+            title={f.title}
+            desc={f.desc}
+            isActive={i % FEATURES.length === activeIdx}
+          />
+        ))}
+      </div>
+      <div className="home-feat-carousel-dots">
+        {FEATURES.map((_, i) => (
+          <button
+            key={i}
+            className={`home-feat-dot${i === activeIdx ? " active" : ""}`}
+            aria-label={`Feature ${i + 1}`}
+            onClick={() => {
+              const targetLooped = FEATURES.length + i;
+              currentIdxRef.current = targetLooped;
+              scrollToIdx(targetLooped, true);
+              setIsPaused(true);
+              setTimeout(() => setIsPaused(false), 1500);
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -185,9 +422,11 @@ export default function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [heroRef, heroVisible] = useReveal();
+  const [showDemo, setShowDemo] = useState(false);
 
   return (
     <div className="home-root">
+      {showDemo && <DemoVideoModal onClose={() => setShowDemo(false)} />}
       <nav className="home-nav">
         <div className="home-nav-inner">
           <Link to="/" className="home-nav-logo">
@@ -247,7 +486,7 @@ export default function Home() {
         >
           <div className="home-eyebrow">
             <span className="home-eyebrow-dot" />
-            Real-time polling platform for 2026
+            Turn every vote into meaningful feedback
           </div>
 
           <h1 className="home-headline">
@@ -263,44 +502,73 @@ export default function Home() {
 
           <div className="home-hero-actions">
             {user ? (
-              <Link to="/dashboard" className="home-btn-hero">
-                Go to Dashboard
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </Link>
+              <>
+                <Link to="/dashboard" className="home-btn-hero">
+                  Go to Dashboard
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </Link>
+                <button onClick={() => setShowDemo(true)} className="home-btn-view-demo">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                  View Demo
+                </button>
+              </>
             ) : (
-              <Link to="/signup" className="home-btn-hero">
-                Start polling for free
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </Link>
-            )}
-            {!user && (
-              <Link to="/signin" className="home-btn-ghost">
-                Sign in
-              </Link>
+              <>
+                <Link to="/signup" className="home-btn-hero">
+                  Start polling for free
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </Link>
+                <button onClick={() => setShowDemo(true)} className="home-btn-view-demo">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                  View Demo
+                </button>
+              </>
             )}
           </div>
 
@@ -347,45 +615,8 @@ export default function Home() {
           <p className="home-section-sub">
             No bloat, no complexity. Just the tools that matter — beautifully crafted.
           </p>
-          <div className="home-feat-grid">
-            <FeatureCard
-              delay={0}
-              icon="⚡"
-              title="Instant live results"
-              desc="Votes appear in real-time via WebSockets. No page refresh, no polling interval — just live."
-            />
-            <FeatureCard
-              delay={80}
-              icon="🔗"
-              title="One shareable link"
-              desc="Every poll gets a clean slug-based URL. Share it anywhere — Slack, email, socials, QR."
-            />
-            <FeatureCard
-              delay={160}
-              icon="⏱"
-              title="Automatic expiry"
-              desc="Set a deadline and the poll closes itself. Results are preserved forever after."
-            />
-            <FeatureCard
-              delay={240}
-              icon="🛡"
-              title="One vote per person"
-              desc="Built-in duplicate vote prevention keeps results honest without requiring a login to vote."
-            />
-            <FeatureCard
-              delay={320}
-              icon="📊"
-              title="Beautiful result bars"
-              desc="Animated gradient bars, vote counts, percentages and a leading indicator — all at a glance."
-            />
-            <FeatureCard
-              delay={400}
-              icon="📱"
-              title="Fully responsive"
-              desc="Works perfectly on every screen size — mobile, tablet, desktop, and everything in between."
-            />
-          </div>
         </div>
+        <FeaturesCarousel />
       </section>
 
       {/* ── HOW IT WORKS ── */}
@@ -430,6 +661,9 @@ export default function Home() {
           <h2 className="home-section-title">Designed for speed & clarity</h2>
           <div className="home-bento">
             <div className="home-bento-card home-bento-large">
+              <div className="bento-accent-line" aria-hidden />
+              <div className="bento-orb bento-orb-1" aria-hidden />
+              <div className="bento-orb bento-orb-2" aria-hidden />
               <div className="home-bento-label">Live results</div>
               <div className="home-bento-title">Watch your audience decide — in real time</div>
               <div className="home-bento-bars-mini">
@@ -467,6 +701,8 @@ export default function Home() {
             </div>
 
             <div className="home-bento-card home-bento-sm">
+              <div className="bento-accent-line" aria-hidden />
+              <div className="bento-orb bento-orb-1" aria-hidden />
               <div className="home-bento-label">Share anywhere</div>
               <div className="home-bento-title">One link. Every platform.</div>
               <div className="home-bento-link-row">
@@ -482,6 +718,8 @@ export default function Home() {
             </div>
 
             <div className="home-bento-card home-bento-sm">
+              <div className="bento-accent-line" aria-hidden />
+              <div className="bento-orb bento-orb-2" aria-hidden />
               <div className="home-bento-label">Auto-expiry</div>
               <div className="home-bento-title">Closes itself when time's up</div>
               <div className="home-countdown-demo">
@@ -517,6 +755,9 @@ export default function Home() {
             </div>
 
             <div className="home-bento-card home-bento-wide">
+              <div className="bento-accent-line" aria-hidden />
+              <div className="bento-orb bento-orb-1" aria-hidden />
+              <div className="bento-orb bento-orb-2" aria-hidden />
               <div className="home-bento-label">Dashboard</div>
               <div className="home-bento-title">All your polls in one place</div>
               <div className="home-bento-dash-row">
