@@ -8,7 +8,9 @@ exports.createPoll = async (req, res) => {
   const { question, options, expiresAt } = req.body;
 
   if (!question || !options || options.length < 2 || options.length > 6)
-    return res.status(400).json({ message: "Question and 2–6 options required" });
+    return res
+      .status(400)
+      .json({ message: "Question and 2–6 options required" });
   if (!expiresAt || new Date(expiresAt) <= new Date())
     return res.status(400).json({ message: "Expiry must be in the future" });
 
@@ -28,7 +30,12 @@ exports.createPoll = async (req, res) => {
 exports.getPoll = async (req, res) => {
   try {
     const poll = await Poll.findOne({
-      $or: [{ slug: req.params.id }, { _id: req.params.id.match(/^[0-9a-fA-F]{24}$/) ? req.params.id : null }],
+      $or: [
+        { slug: req.params.id },
+        {
+          _id: req.params.id.match(/^[0-9a-fA-F]{24}$/) ? req.params.id : null,
+        },
+      ],
     }).select("-voters");
 
     if (!poll) return res.status(404).json({ message: "Poll not found" });
@@ -45,7 +52,12 @@ exports.vote = async (req, res) => {
 
   try {
     const poll = await Poll.findOne({
-      $or: [{ slug: req.params.id }, { _id: req.params.id.match(/^[0-9a-fA-F]{24}$/) ? req.params.id : null }],
+      $or: [
+        { slug: req.params.id },
+        {
+          _id: req.params.id.match(/^[0-9a-fA-F]{24}$/) ? req.params.id : null,
+        },
+      ],
     });
 
     if (!poll) return res.status(404).json({ message: "Poll not found" });
@@ -63,7 +75,7 @@ exports.vote = async (req, res) => {
     const pollData = poll.toObject();
     delete pollData.voters;
 
-    // Emit real-time update
+    
     req.io.to(poll.slug).emit("voteUpdate", { ...pollData, isExpired: false });
 
     res.json({ ...pollData, isExpired: false });
@@ -96,7 +108,10 @@ exports.deletePoll = async (req, res) => {
       createdBy: req.userId,
     });
 
-    if (!poll) return res.status(404).json({ message: "Poll not found or unauthorized" });
+    if (!poll)
+      return res
+        .status(404)
+        .json({ message: "Poll not found or unauthorized" });
     res.json({ message: "Poll deleted" });
   } catch (err) {
     res.status(500).json({ message: "Server error" });

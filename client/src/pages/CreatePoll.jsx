@@ -9,29 +9,39 @@ const defaultExpiry = () => {
 };
 
 export default function CreatePoll() {
-  const [question, setQuestion]   = useState("");
-  const [options, setOptions]     = useState(["", ""]);
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState(["", ""]);
   const [expiresAt, setExpiresAt] = useState(defaultExpiry());
-  const [error, setError]         = useState("");
-  const [loading, setLoading]     = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const updateOption = (i, val) => {
-    const next = [...options]; next[i] = val; setOptions(next);
+    const next = [...options];
+    next[i] = val;
+    setOptions(next);
   };
-  const addOption    = () => { if (options.length < 6) setOptions([...options, ""]); };
-  const removeOption = (i) => { if (options.length > 2) setOptions(options.filter((_, idx) => idx !== i)); };
+  const addOption = () => {
+    if (options.length < 6) setOptions([...options, ""]);
+  };
+  const removeOption = (i) => {
+    if (options.length > 2) setOptions(options.filter((_, idx) => idx !== i));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     const trimmed = options.map((o) => o.trim()).filter(Boolean);
-    if (!question.trim())    return setError("Question is required");
-    if (trimmed.length < 2)  return setError("At least 2 non-empty options required");
+    if (!question.trim()) return setError("Question is required");
+    if (trimmed.length < 2) return setError("At least 2 non-empty options required");
     if (new Date(expiresAt) <= new Date()) return setError("Expiry must be in the future");
     setLoading(true);
     try {
-      const res = await api.post("/polls", { question: question.trim(), options: trimmed, expiresAt });
+      const res = await api.post("/polls", {
+        question: question.trim(),
+        options: trimmed,
+        expiresAt,
+      });
       navigate(`/poll/${res.data.slug}`);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create poll");
@@ -47,7 +57,7 @@ export default function CreatePoll() {
       <div className="page-header">
         <div>
           <h1>New Poll</h1>
-          <p style={{ fontSize:13.5, color:"var(--text-muted)", marginTop:3 }}>
+          <p style={{ fontSize: 13.5, color: "var(--text-muted)", marginTop: 3 }}>
             Ask a question, collect real-time votes
           </p>
         </div>
@@ -67,27 +77,48 @@ export default function CreatePoll() {
               placeholder="What would you like to ask?"
               required
               autoFocus
-              style={{ fontSize:15, padding:"12px 16px" }}
+              style={{ fontSize: 15, padding: "12px 16px" }}
             />
           </div>
 
-          {/* Options */}
           <div className="form-group">
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-              <label style={{ marginBottom:0 }}>Answer Options</label>
-              <span style={{ fontSize:12, color: filledCount >= 2 ? "var(--green)" : "var(--text-dim)", fontWeight:600 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
+              <label style={{ marginBottom: 0 }}>Answer Options</label>
+              <span
+                style={{
+                  fontSize: 12,
+                  color: filledCount >= 2 ? "var(--green)" : "var(--text-dim)",
+                  fontWeight: 600,
+                }}
+              >
                 {filledCount}/6 filled
               </span>
             </div>
             <div className="options-list">
               {options.map((opt, i) => (
                 <div className="option-row" key={i}>
-                  <div style={{ position:"relative", flex:1, display:"flex", alignItems:"center" }}>
-                    <span style={{
-                      position:"absolute", left:12, fontSize:11, fontWeight:700,
-                      color:"var(--text-dim)", fontFamily:"var(--mono)",
-                      pointerEvents:"none", userSelect:"none"
-                    }}>
+                  <div
+                    style={{ position: "relative", flex: 1, display: "flex", alignItems: "center" }}
+                  >
+                    <span
+                      style={{
+                        position: "absolute",
+                        left: 12,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: "var(--text-dim)",
+                        fontFamily: "var(--mono)",
+                        pointerEvents: "none",
+                        userSelect: "none",
+                      }}
+                    >
                       {String.fromCharCode(65 + i)}
                     </span>
                     <input
@@ -95,11 +126,16 @@ export default function CreatePoll() {
                       value={opt}
                       onChange={(e) => updateOption(i, e.target.value)}
                       placeholder={`Option ${i + 1}`}
-                      style={{ paddingLeft:28 }}
+                      style={{ paddingLeft: 28 }}
                     />
                   </div>
                   {options.length > 2 && (
-                    <button type="button" className="option-remove" onClick={() => removeOption(i)} title="Remove">
+                    <button
+                      type="button"
+                      className="option-remove"
+                      onClick={() => removeOption(i)}
+                      title="Remove"
+                    >
                       ×
                     </button>
                   )}
@@ -126,7 +162,7 @@ export default function CreatePoll() {
               min={new Date().toISOString().slice(0, 16)}
               required
             />
-            <div style={{ fontSize:12, color:"var(--text-dim)", marginTop:6 }}>
+            <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 6 }}>
               Voting will close automatically at this time
             </div>
           </div>
@@ -140,13 +176,21 @@ export default function CreatePoll() {
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? (
                 <>
-                  <span className="spinner" style={{ width:14, height:14, borderWidth:2 }} />
+                  <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
                   Creating…
                 </>
               ) : (
                 <>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <polyline points="20 6 9 17 4 12"/>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                   Create Poll
                 </>

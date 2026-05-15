@@ -9,8 +9,16 @@ import Analytics from "./dashboard/Analytics.jsx";
 import Insights from "./dashboard/Insights.jsx";
 import DeleteConfirmModal from "./dashboard/DeleteConfirmModal";
 
-/* ── Sidebar shared component ──────────────────────────── */
-function SidebarContent({ sidebarOpen, activeNav, setActiveNav, user, logout, navigate, polls, navItems }) {
+function SidebarContent({
+  sidebarOpen,
+  activeNav,
+  setActiveNav,
+  user,
+  logout,
+  navigate,
+  polls,
+  navItems,
+}) {
   return (
     <div className={`sidebar ${sidebarOpen ? "" : "collapsed"}`}>
       <div className="sb-logo">
@@ -25,15 +33,23 @@ function SidebarContent({ sidebarOpen, activeNav, setActiveNav, user, logout, na
 
       <div className="sb-nav">
         {sidebarOpen && <div className="sb-section-lbl">Workspace</div>}
-        {navItems.map(n => (
-          <div key={n.id} className={`sb-item ${activeNav === n.id ? "active" : ""}`} onClick={() => setActiveNav(n.id)}>
+        {navItems.map((n) => (
+          <div
+            key={n.id}
+            className={`sb-item ${activeNav === n.id ? "active" : ""}`}
+            onClick={() => setActiveNav(n.id)}
+          >
             <span className="sb-icon">{n.icon}</span>
             {sidebarOpen && <span className="sb-lbl">{n.label}</span>}
             {sidebarOpen && n.badge !== null && <span className="sb-badge">{n.badge}</span>}
           </div>
         ))}
 
-        {sidebarOpen && <div className="sb-section-lbl" style={{ marginTop: 18 }}>Actions</div>}
+        {sidebarOpen && (
+          <div className="sb-section-lbl" style={{ marginTop: 18 }}>
+            Actions
+          </div>
+        )}
         <Link to="/create" className="sb-item" style={{ textDecoration: "none" }}>
           <span className="sb-icon">✦</span>
           {sidebarOpen && <span className="sb-lbl">New Poll</span>}
@@ -50,7 +66,9 @@ function SidebarContent({ sidebarOpen, activeNav, setActiveNav, user, logout, na
           {sidebarOpen && (
             <div style={{ minWidth: 0 }}>
               <div className="u-name">{user?.email?.split("@")[0] || "User"}</div>
-              <div className="u-out" onClick={logout}>Sign out →</div>
+              <div className="u-out" onClick={logout}>
+                Sign out →
+              </div>
             </div>
           )}
         </div>
@@ -59,7 +77,6 @@ function SidebarContent({ sidebarOpen, activeNav, setActiveNav, user, logout, na
   );
 }
 
-/* ── Main Dashboard ─────────────────────────────────────── */
 export default function Dashboard() {
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,28 +89,40 @@ export default function Dashboard() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  useEffect(() => { fetchPolls(); }, []);
-  useEffect(() => { if (!loading) setTimeout(() => setAnimStarted(true), 200); }, [loading]);
-  useEffect(() => { setSidebarMobile(false); }, [activeNav]);
+  useEffect(() => {
+    fetchPolls();
+  }, []);
+  useEffect(() => {
+    if (!loading) setTimeout(() => setAnimStarted(true), 200);
+  }, [loading]);
+  useEffect(() => {
+    setSidebarMobile(false);
+  }, [activeNav]);
 
   const fetchPolls = async () => {
     try {
       const res = await api.get("/polls/user");
       setPolls(res.data);
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-const handleDeleteConfirm = async () => {
-  if (!deleteTarget) return;
-  try {
-    await api.delete(`/polls/${deleteTarget.id}`);
-    setPolls(p => p.filter(x => x._id !== deleteTarget.id));
-  } catch (err) { alert(err.response?.data?.message || "Failed to delete poll"); }
-  finally { setDeleteTarget(null); }
-};
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    try {
+      await api.delete(`/polls/${deleteTarget.id}`);
+      setPolls((p) => p.filter((x) => x._id !== deleteTarget.id));
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to delete poll");
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
 
   const navItems = [
     { id: "overview", icon: "⬡", label: "Overview", badge: null },
@@ -102,11 +131,17 @@ const handleDeleteConfirm = async () => {
     { id: "insights", icon: "◆", label: "Insights", badge: null },
   ];
 
-  const pageLabels = { overview: "Overview", polls: "My Polls", analytics: "Analytics", insights: "Insights" };
+  const pageLabels = {
+    overview: "Overview",
+    polls: "My Polls",
+    analytics: "Analytics",
+    insights: "Insights",
+  };
   const pageDescriptions = {
-    overview: polls.filter(p => !p.isExpired).length > 0
-      ? `${polls.filter(p => !p.isExpired).length} active poll${polls.filter(p => !p.isExpired).length > 1 ? "s" : ""} collecting votes. Analytics are live.`
-      : "Create your first poll and watch your analytics come alive.",
+    overview:
+      polls.filter((p) => !p.isExpired).length > 0
+        ? `${polls.filter((p) => !p.isExpired).length} active poll${polls.filter((p) => !p.isExpired).length > 1 ? "s" : ""} collecting votes. Analytics are live.`
+        : "Create your first poll and watch your analytics come alive.",
     polls: "Manage all your polls — view results, share links, or delete old ones.",
     analytics: "Deep dive into participation rates, vote distribution, and poll performance.",
     insights: "Smart predictions and data-driven recommendations based on your polls.",
@@ -116,11 +151,21 @@ const handleDeleteConfirm = async () => {
 
   const renderPage = () => {
     switch (activeNav) {
-      case "overview":  return <Overview {...sharedProps} />;
-      case "polls": return <MyPolls {...sharedProps} onDelete={(id, question) => setDeleteTarget({ id, question })} />;
-      case "analytics": return <Analytics {...sharedProps} />;
-      case "insights":  return <Insights {...sharedProps} />;
-      default:          return <Overview {...sharedProps} />;
+      case "overview":
+        return <Overview {...sharedProps} />;
+      case "polls":
+        return (
+          <MyPolls
+            {...sharedProps}
+            onDelete={(id, question) => setDeleteTarget({ id, question })}
+          />
+        );
+      case "analytics":
+        return <Analytics {...sharedProps} />;
+      case "insights":
+        return <Insights {...sharedProps} />;
+      default:
+        return <Overview {...sharedProps} />;
     }
   };
 
@@ -449,48 +494,60 @@ const handleDeleteConfirm = async () => {
 
       <div className="dash-shell">
         <DeleteConfirmModal
-    isOpen={!!deleteTarget}
-    pollName={deleteTarget?.question}
-    onConfirm={handleDeleteConfirm}
-    onCancel={() => setDeleteTarget(null)}
-  />
+          isOpen={!!deleteTarget}
+          pollName={deleteTarget?.question}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeleteTarget(null)}
+        />
         <div className="dash-blob db1" />
         <div className="dash-blob db2" />
         <div className="dash-blob db3" />
 
-        {/* Mobile overlay */}
-        {sidebarMobile && <div className="sidebar-overlay" onClick={() => setSidebarMobile(false)} />}
+        {sidebarMobile && (
+          <div className="sidebar-overlay" onClick={() => setSidebarMobile(false)} />
+        )}
 
-        {/* Desktop sidebar */}
         <SidebarContent
-          sidebarOpen={sidebarOpen} activeNav={activeNav}
-          setActiveNav={setActiveNav} user={user} logout={logout}
-          navigate={navigate} polls={polls} navItems={navItems}
+          sidebarOpen={sidebarOpen}
+          activeNav={activeNav}
+          setActiveNav={setActiveNav}
+          user={user}
+          logout={logout}
+          navigate={navigate}
+          polls={polls}
+          navItems={navItems}
         />
 
-        {/* Mobile sidebar - only rendered when open, prevents double sidebar on desktop */}
         {sidebarMobile && (
           <div className="sidebar-mobile-wrap open">
             <SidebarContent
-              sidebarOpen={true} activeNav={activeNav}
-              setActiveNav={setActiveNav} user={user} logout={logout}
-              navigate={navigate} polls={polls} navItems={navItems}
+              sidebarOpen={true}
+              activeNav={activeNav}
+              setActiveNav={setActiveNav}
+              user={user}
+              logout={logout}
+              navigate={navigate}
+              polls={polls}
+              navItems={navItems}
             />
           </div>
         )}
 
-        {/* Main area */}
         <div className="main">
-          {/* Topbar */}
           <div className="topbar">
             <div className="tb-left">
-              <button className="hamburger" onClick={() => {
-                if (window.matchMedia('(max-width: 900px)').matches) {
-                  setSidebarMobile(v => !v);
-                } else {
-                  setSidebarOpen(v => !v);
-                }
-              }}>☰</button>
+              <button
+                className="hamburger"
+                onClick={() => {
+                  if (window.matchMedia("(max-width: 900px)").matches) {
+                    setSidebarMobile((v) => !v);
+                  } else {
+                    setSidebarOpen((v) => !v);
+                  }
+                }}
+              >
+                ☰
+              </button>
               <div className="crumb">
                 <span>Pollr</span>
                 <span>›</span>
@@ -499,8 +556,12 @@ const handleDeleteConfirm = async () => {
             </div>
             <div className="tb-right">
               <div className="filter-tabs">
-                {["daily", "weekly", "monthly"].map(f => (
-                  <button key={f} className={`f-tab ${filter === f ? "on" : ""}`} onClick={() => setFilter(f)}>
+                {["daily", "weekly", "monthly"].map((f) => (
+                  <button
+                    key={f}
+                    className={`f-tab ${filter === f ? "on" : ""}`}
+                    onClick={() => setFilter(f)}
+                  >
                     {f.charAt(0).toUpperCase() + f.slice(1)}
                   </button>
                 ))}
@@ -514,12 +575,14 @@ const handleDeleteConfirm = async () => {
             </div>
           </div>
 
-          {/* Content */}
           <div className="content">
             <div className="hero-band">
-              <div className="live-badge"><div className="live-dot" /> Live Dashboard</div>
+              <div className="live-badge">
+                <div className="live-dot" /> Live Dashboard
+              </div>
               <div className="hero-h">
-                {activeNav === "overview" && `Welcome back, ${user?.email?.split("@")[0] || "Creator"} 👋`}
+                {activeNav === "overview" &&
+                  `Welcome back, ${user?.email?.split("@")[0] || "Creator"} 👋`}
                 {activeNav === "polls" && "My Polls"}
                 {activeNav === "analytics" && "Analytics Dashboard"}
                 {activeNav === "insights" && "Smart Insights"}

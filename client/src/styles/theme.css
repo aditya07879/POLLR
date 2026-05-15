@@ -1,77 +1,86 @@
-/* ── LIGHT THEME (default) ──────────────────────────────── */
+/*  LIGHT THEME (default)  */
 :root,
 [data-theme="light"] {
-  --bg:          #f8fafc;
-  --bg2:         #f1f5f9;
-  --surface:     #ffffff;
-  --surface2:    #f8fafc;
-  --border:      #e2e8f0;
-  --border2:     #cbd5e1;
-  --accent:      #7c3aed;
-  --accent-dim:  rgba(124,58,237,.09);
-  --accent-glow: rgba(124,58,237,.22);
-  --accent2:     #6d28d9;
-  --text:        #0f172a;
-  --text-muted:  #64748b;
-  --text-dim:    #94a3b8;
-  --red:         #ef4444;
-  --red-dim:     rgba(239,68,68,.1);
-  --green:       #10b981;
-  --green-dim:   rgba(16,185,129,.1);
-  --nav-blur-bg: rgba(248,250,252,.88);
-  --card-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
-  --card-hover:  0 4px 24px rgba(0,0,0,.10), 0 1px 4px rgba(0,0,0,.04);
-  --orb1: rgba(124,58,237,.10);
-  --orb2: rgba(109,40,217,.08);
+  --bg: #f8fafc;
+  --bg2: #f1f5f9;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --border: #e2e8f0;
+  --border2: #cbd5e1;
+  --accent: #7c3aed;
+  --accent-dim: rgba(124, 58, 237, 0.09);
+  --accent-glow: rgba(124, 58, 237, 0.22);
+  --accent2: #6d28d9;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  --red: #ef4444;
+  --red-dim: rgba(239, 68, 68, 0.1);
+  --green: #10b981;
+  --green-dim: rgba(16, 185, 129, 0.1);
+  --nav-blur-bg: rgba(248, 250, 252, 0.88);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --card-hover: 0 4px 24px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --orb1: rgba(124, 58, 237, 0.1);
+  --orb2: rgba(109, 40, 217, 0.08);
   color-scheme: light;
 }
 
-/* ── DARK THEME ──────────────────────────────────────────── */
+/*  DARK THEME  */
 [data-theme="dark"] {
-  --bg:          #0f172a;
-  --bg2:         #1e293b;
-  --surface:     #111827;
-  --surface2:    #1e293b;
-  --border:      #1e293b;
-  --border2:     #334155;
-  --accent:      #8b5cf6;
-  --accent-dim:  rgba(139,92,246,.15);
-  --accent-glow: rgba(139,92,246,.30);
-  --accent2:     #a78bfa;
-  --text:        #f8fafc;
-  --text-muted:  #94a3b8;
-  --text-dim:    #64748b;
-  --red:         #f87171;
-  --red-dim:     rgba(248,113,113,.12);
-  --green:       #34d399;
-  --green-dim:   rgba(52,211,153,.12);
-  --nav-blur-bg: rgba(15,23,42,.90);
-  --card-shadow: 0 1px 3px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
-  --card-hover:  0 4px 24px rgba(0,0,0,.5), 0 1px 6px rgba(139,92,246,.12);
-  --orb1: rgba(139,92,246,.12);
-  --orb2: rgba(167,139,250,.08);
+  --bg: #0f172a;
+  --bg2: #1e293b;
+  --surface: #111827;
+  --surface2: #1e293b;
+  --border: #1e293b;
+  --border2: #334155;
+  --accent: #8b5cf6;
+  --accent-dim: rgba(139, 92, 246, 0.15);
+  --accent-glow: rgba(139, 92, 246, 0.3);
+  --accent2: #a78bfa;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --red: #f87171;
+  --red-dim: rgba(248, 113, 113, 0.12);
+  --green: #34d399;
+  --green-dim: rgba(52, 211, 153, 0.12);
+  --nav-blur-bg: rgba(15, 23, 42, 0.9);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --card-hover: 0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 6px rgba(139, 92, 246, 0.12);
+  --orb1: rgba(139, 92, 246, 0.12);
+  --orb2: rgba(167, 139, 250, 0.08);
   color-scheme: dark;
 }
 
-/* ── GLOBAL TRANSITIONS ──────────────────────────────────── */
+/*  GLOBAL TRANSITIONS  */
 *,
 *::before,
 *::after {
   transition-property: background-color, border-color, color, box-shadow, opacity;
   transition-duration: 220ms;
-  transition-timing-function: cubic-bezier(.25,.46,.45,.94);
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Keep transform/filter transitions fast and unaffected */
-button, a, .btn, .poll-card, .stat-card, .home-feat-card, .home-bento-card {
-  transition: background-color 220ms ease, border-color 220ms ease,
-              color 220ms ease, box-shadow 220ms ease,
-              transform 180ms ease, opacity 220ms ease !important;
+button,
+a,
+.btn,
+.poll-card,
+.stat-card,
+.home-feat-card,
+.home-bento-card {
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease,
+    transform 180ms ease,
+    opacity 220ms ease !important;
 }
 
-/* ── ANIMATED GRADIENT BACKGROUND ───────────────────────── */
+/*ANIMATED GRADIENT BACKGROUND */
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -83,8 +92,12 @@ body::before {
 }
 
 @keyframes bg-drift {
-  from { transform: scale(1) translate(0, 0); }
-  to   { transform: scale(1.08) translate(10px, -15px); }
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.08) translate(10px, -15px);
+  }
 }
 
 body {
@@ -98,7 +111,7 @@ nav,
   z-index: 1;
 }
 
-/* ── NAV OVERRIDES FOR THEME ────────────────────────────── */
+/*  NAV OVERRIDES FOR THEME  */
 nav {
   background: var(--nav-blur-bg) !important;
 }
@@ -107,7 +120,7 @@ nav {
   background: var(--nav-blur-bg) !important;
 }
 
-/* ── CARD OVERRIDES ──────────────────────────────────────── */
+/*  CARD OVERRIDES */
 .stat-card,
 .poll-card,
 .form-card,
@@ -131,7 +144,7 @@ nav {
   box-shadow: var(--card-hover) !important;
 }
 
-/* ── THEME TOGGLE BUTTON ─────────────────────────────────── */
+/* THEME TOGGLE BUTTO */
 .theme-toggle {
   position: fixed;
   bottom: 28px;
@@ -141,13 +154,15 @@ nav {
   border: none;
   cursor: pointer;
   padding: 0;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,.18));
-  transition: transform 200ms ease, filter 200ms ease !important;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.18));
+  transition:
+    transform 200ms ease,
+    filter 200ms ease !important;
 }
 
 .theme-toggle:hover {
   transform: scale(1.1) !important;
-  filter: drop-shadow(0 6px 20px rgba(139,92,246,.35));
+  filter: drop-shadow(0 6px 20px rgba(139, 92, 246, 0.35));
 }
 
 .theme-toggle:active {
@@ -170,7 +185,9 @@ nav {
 [data-theme="dark"] .theme-toggle-track {
   background: linear-gradient(135deg, #1e293b, #111827);
   border-color: #334155;
-  box-shadow: 0 0 0 1px rgba(139,92,246,.2), 0 4px 16px rgba(0,0,0,.4);
+  box-shadow:
+    0 0 0 1px rgba(139, 92, 246, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .theme-toggle-thumb {
@@ -185,7 +202,9 @@ nav {
 .theme-icon {
   position: absolute;
   font-size: 22px;
-  transition: opacity 300ms ease, transform 400ms cubic-bezier(.34,1.56,.64,1) !important;
+  transition:
+    opacity 300ms ease,
+    transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   line-height: 1;
 }
 
@@ -211,16 +230,11 @@ nav {
 
 /* Glow ring on hover */
 .theme-toggle::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    var(--accent),
-    var(--accent2),
-    var(--accent)
-  );
+  background: conic-gradient(from 0deg, var(--accent), var(--accent2), var(--accent));
   opacity: 0;
   z-index: -1;
   transition: opacity 220ms ease !important;
@@ -228,29 +242,35 @@ nav {
 }
 
 @keyframes ring-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .theme-toggle:hover::after {
   opacity: 0.5;
 }
 
-/* ── SCROLLBAR THEMING ───────────────────────────────────── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
+/*  SCROLLBAR THEMING  */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 ::-webkit-scrollbar-thumb {
   background: var(--border2);
   border-radius: 99px;
 }
 
-/* ── HOME PAGE DARK OVERRIDES ────────────────────────────── */
+/* HOME PAGE DARK OVERRIDES */
 [data-theme="dark"] .home-root {
   background: var(--bg);
 }
 
 [data-theme="dark"] .home-grid-bg {
   background-image: radial-gradient(circle, #334155 1px, transparent 1px);
-  opacity: .2;
+  opacity: 0.2;
 }
 
 [data-theme="dark"] .home-cta-section {
@@ -286,7 +306,7 @@ nav {
 }
 
 [data-theme="dark"] .option-btn.selected {
-  background: rgba(139,92,246,.15);
+  background: rgba(139, 92, 246, 0.15);
   border-color: var(--accent);
 }
 
@@ -322,7 +342,7 @@ nav {
 [data-theme="dark"] .form-group textarea:focus {
   background: var(--surface);
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(139,92,246,.15);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 [data-theme="dark"] .nav-email {
@@ -358,7 +378,7 @@ nav {
   border-color: var(--border2);
 }
 
-/* ── MOBILE RESPONSIVE TOGGLE ────────────────────────────── */
+/* MOBILE RESPONSIVE TOGGLE */
 @media (max-width: 640px) {
   .theme-toggle {
     bottom: 20px;
@@ -372,5 +392,3 @@ nav {
     font-size: 18px;
   }
 }
-
-

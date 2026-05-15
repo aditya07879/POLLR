@@ -8,18 +8,20 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 
 export default function PollPage() {
   const { slug } = useParams();
-  const [poll, setPoll]         = useState(null);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState("");
+  const [poll, setPoll] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [selected, setSelected] = useState(null);
-  const [voted, setVoted]       = useState(false);
-  const [voting, setVoting]     = useState(false);
+  const [voted, setVoted] = useState(false);
+  const [voting, setVoting] = useState(false);
   const [voteError, setVoteError] = useState("");
-  const [copied, setCopied]     = useState(false);
+  const [copied, setCopied] = useState(false);
   const socketRef = useRef(null);
   const { timeLeft, urgent } = useCountdown(poll?.expiresAt);
 
-  useEffect(() => { fetchPoll(); }, [slug]);
+  useEffect(() => {
+    fetchPoll();
+  }, [slug]);
 
   useEffect(() => {
     if (!poll) return;
@@ -63,9 +65,9 @@ export default function PollPage() {
   };
 
   const totalVotes = poll?.options.reduce((s, o) => s + o.votes, 0) || 0;
-  const getPct     = (votes) => (totalVotes === 0 ? 0 : Math.round((votes / totalVotes) * 100));
-  const shareUrl   = `${window.location.origin}/poll/${poll?.slug}`;
-  const maxVotes   = poll ? Math.max(...poll.options.map((o) => o.votes)) : 0;
+  const getPct = (votes) => (totalVotes === 0 ? 0 : Math.round((votes / totalVotes) * 100));
+  const shareUrl = `${window.location.origin}/poll/${poll?.slug}`;
+  const maxVotes = poll ? Math.max(...poll.options.map((o) => o.votes)) : 0;
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -84,20 +86,22 @@ export default function PollPage() {
 
   if (error) {
     return (
-      <div className="loading" style={{ flexDirection:"column", gap:20 }}>
-        <div style={{ fontSize:40 }}>🔍</div>
-        <div style={{ fontSize:17, fontWeight:600, color:"var(--text)" }}>Poll not found</div>
-        <div style={{ color:"var(--text-muted)", fontSize:14 }}>{error}</div>
-        <Link to="/dashboard" className="btn btn-ghost" style={{ marginTop:8 }}>← Back to Dashboard</Link>
+      <div className="loading" style={{ flexDirection: "column", gap: 20 }}>
+        <div style={{ fontSize: 40 }}>🔍</div>
+        <div style={{ fontSize: 17, fontWeight: 600, color: "var(--text)" }}>Poll not found</div>
+        <div style={{ color: "var(--text-muted)", fontSize: 14 }}>{error}</div>
+        <Link to="/dashboard" className="btn btn-ghost" style={{ marginTop: 8 }}>
+          ← Back to Dashboard
+        </Link>
       </div>
     );
   }
 
   if (!poll) return null;
 
-  const isExpired  = poll.isExpired || timeLeft === "Expired";
+  const isExpired = poll.isExpired || timeLeft === "Expired";
   const showResults = voted || isExpired;
-  const LETTERS = ["A","B","C","D","E","F"];
+  const LETTERS = ["A", "B", "C", "D", "E", "F"];
 
   return (
     <div className="poll-page">
@@ -111,14 +115,23 @@ export default function PollPage() {
             <>
               <span className="badge badge-active">Live</span>
               <span className={`countdown${urgent ? " urgent" : ""}`}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
                 </svg>
                 {timeLeft}
               </span>
             </>
           )}
-          <span style={{ fontSize:13, color:"var(--text-muted)" }}>
+          <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
             {totalVotes} vote{totalVotes !== 1 ? "s" : ""}
           </span>
         </div>
@@ -126,14 +139,20 @@ export default function PollPage() {
 
       {/* Status messages */}
       {isExpired && (
-        <div className="expired-banner">
-          🔒 This poll has closed — results are final
-        </div>
+        <div className="expired-banner">🔒 This poll has closed — results are final</div>
       )}
       {voted && !isExpired && (
         <div className="voted-msg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <polyline points="20 6 9 17 4 12"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
           </svg>
           Your vote has been recorded
         </div>
@@ -151,14 +170,24 @@ export default function PollPage() {
                 onClick={() => setSelected(i)}
                 disabled={isExpired}
               >
-                <span style={{
-                  display:"inline-flex", alignItems:"center", justifyContent:"center",
-                  width:22, height:22, borderRadius:6, marginRight:12, flexShrink:0,
-                  background: selected === i ? "var(--accent)" : "var(--bg2)",
-                  color: selected === i ? "#fff" : "var(--text-dim)",
-                  fontSize:11, fontWeight:700, fontFamily:"var(--mono)",
-                  transition:"all .18s",
-                }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 22,
+                    height: 22,
+                    borderRadius: 6,
+                    marginRight: 12,
+                    flexShrink: 0,
+                    background: selected === i ? "var(--accent)" : "var(--bg2)",
+                    color: selected === i ? "#fff" : "var(--text-dim)",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    fontFamily: "var(--mono)",
+                    transition: "all .18s",
+                  }}
+                >
                   {LETTERS[i]}
                 </span>
                 {opt.text}
@@ -169,14 +198,16 @@ export default function PollPage() {
             className="btn btn-primary"
             onClick={handleVote}
             disabled={selected === null || voting || isExpired}
-            style={{ alignSelf:"flex-start", padding:"11px 24px" }}
+            style={{ alignSelf: "flex-start", padding: "11px 24px" }}
           >
             {voting ? (
               <>
-                <span className="spinner" style={{ width:14,height:14,borderWidth:2 }} />
+                <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
                 Submitting…
               </>
-            ) : "Submit Vote"}
+            ) : (
+              "Submit Vote"
+            )}
           </button>
         </>
       )}
@@ -193,29 +224,49 @@ export default function PollPage() {
           </div>
 
           {poll.options.map((opt, i) => {
-            const pct      = getPct(opt.votes);
+            const pct = getPct(opt.votes);
             const isLeading = opt.votes === maxVotes && maxVotes > 0;
             return (
               <div className="result-bar-row" key={i}>
                 <div className="result-bar-label">
-                  <span style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <span style={{
-                      display:"inline-flex", alignItems:"center", justifyContent:"center",
-                      width:20, height:20, borderRadius:5, flexShrink:0,
-                      background: isLeading ? "var(--accent-dim)" : "var(--bg2)",
-                      color: isLeading ? "var(--accent)" : "var(--text-dim)",
-                      fontSize:10, fontWeight:700, fontFamily:"var(--mono)",
-                    }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 20,
+                        height: 20,
+                        borderRadius: 5,
+                        flexShrink: 0,
+                        background: isLeading ? "var(--accent-dim)" : "var(--bg2)",
+                        color: isLeading ? "var(--accent)" : "var(--text-dim)",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        fontFamily: "var(--mono)",
+                      }}
+                    >
                       {LETTERS[i]}
                     </span>
                     {opt.text}
                     {isLeading && totalVotes > 0 && (
-                      <span style={{ fontSize:11, color:"var(--accent)", fontWeight:600, background:"var(--accent-dim)", padding:"1px 7px", borderRadius:99 }}>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: "var(--accent)",
+                          fontWeight: 600,
+                          background: "var(--accent-dim)",
+                          padding: "1px 7px",
+                          borderRadius: 99,
+                        }}
+                      >
                         Leading
                       </span>
                     )}
                   </span>
-                  <span>{pct}% · {opt.votes}</span>
+                  <span>
+                    {pct}% · {opt.votes}
+                  </span>
                 </div>
                 <div className="result-bar-track">
                   <div
@@ -237,31 +288,52 @@ export default function PollPage() {
       {/* Share box */}
       <div className="share-box">
         <span className="share-label">Share</span>
-        <input
-          className="share-url"
-          readOnly
-          value={shareUrl}
-          onFocus={(e) => e.target.select()}
-        />
+        <input className="share-url" readOnly value={shareUrl} onFocus={(e) => e.target.select()} />
         <button className={`copy-btn${copied ? " copied" : ""}`} onClick={copyLink}>
           {copied ? (
             <>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ display:"inline",marginRight:4 }}>
-                <polyline points="20 6 9 17 4 12"/>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                style={{ display: "inline", marginRight: 4 }}
+              >
+                <polyline points="20 6 9 17 4 12" />
               </svg>
               Copied!
             </>
-          ) : "Copy link"}
+          ) : (
+            "Copy link"
+          )}
         </button>
       </div>
 
       {/* Back link */}
       <Link
         to="/dashboard"
-        style={{ fontSize:13.5, color:"var(--text-muted)", textDecoration:"none", display:"inline-flex", alignItems:"center", gap:5 }}
+        style={{
+          fontSize: 13.5,
+          color: "var(--text-muted)",
+          textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
+        }}
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <polyline points="15 18 9 12 15 6"/>
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        >
+          <polyline points="15 18 9 12 15 6" />
         </svg>
         Back to Dashboard
       </Link>

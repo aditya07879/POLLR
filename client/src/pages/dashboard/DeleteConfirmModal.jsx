@@ -1,20 +1,8 @@
 import { useEffect, useRef } from "react";
 
-/**
- * DeleteConfirmModal
- *
- * Drop-in replacement for the browser's native confirm() dialog.
- *
- * Props:
- *   isOpen   – boolean: controls visibility
- *   onCancel – () => void: called when user cancels
- *   onConfirm– () => void: called when user confirms deletion
- *   pollName – string (optional): poll question shown in the modal body
- */
 export default function DeleteConfirmModal({ isOpen, onCancel, onConfirm, pollName }) {
   const confirmBtnRef = useRef(null);
 
-  /* Trap focus + ESC key */
   useEffect(() => {
     if (!isOpen) return;
     confirmBtnRef.current?.focus();
@@ -26,10 +14,11 @@ export default function DeleteConfirmModal({ isOpen, onCancel, onConfirm, pollNa
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, onCancel]);
 
-  /* Prevent body scroll while open */
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -294,16 +283,16 @@ export default function DeleteConfirmModal({ isOpen, onCancel, onConfirm, pollNa
         }
       `}</style>
 
-      {/* ── Overlay (click outside = cancel) ── */}
       <div
         className="dcm-overlay"
         role="dialog"
         aria-modal="true"
         aria-labelledby="dcm-title"
-        onMouseDown={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) onCancel();
+        }}
       >
         <div className="dcm-card">
-
           {/* Icon */}
           <div className="dcm-icon-wrap" aria-hidden="true">
             <svg viewBox="0 0 24 24">
@@ -315,15 +304,19 @@ export default function DeleteConfirmModal({ isOpen, onCancel, onConfirm, pollNa
           </div>
 
           {/* Title */}
-          <div className="dcm-title" id="dcm-title">Delete this poll?</div>
+          <div className="dcm-title" id="dcm-title">
+            Delete this poll?
+          </div>
 
           {/* Body */}
           <div className="dcm-body">
             {pollName ? (
               <>
                 You're about to permanently delete{" "}
-                <span className="dcm-poll-name" title={pollName}>{pollName}</span>
-                {" "}and all its votes.
+                <span className="dcm-poll-name" title={pollName}>
+                  {pollName}
+                </span>{" "}
+                and all its votes.
               </>
             ) : (
               "This poll and all its votes will be permanently removed."
@@ -342,16 +335,11 @@ export default function DeleteConfirmModal({ isOpen, onCancel, onConfirm, pollNa
 
           <div className="dcm-divider" />
 
-          {/* Actions */}
           <div className="dcm-actions">
             <button className="dcm-btn-cancel" onClick={onCancel}>
               Cancel
             </button>
-            <button
-              ref={confirmBtnRef}
-              className="dcm-btn-delete"
-              onClick={onConfirm}
-            >
+            <button ref={confirmBtnRef} className="dcm-btn-delete" onClick={onConfirm}>
               <svg viewBox="0 0 24 24">
                 <polyline points="3 6 5 6 21 6" />
                 <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
@@ -359,7 +347,6 @@ export default function DeleteConfirmModal({ isOpen, onCancel, onConfirm, pollNa
               Delete Poll
             </button>
           </div>
-
         </div>
       </div>
     </>

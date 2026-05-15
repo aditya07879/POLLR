@@ -4,15 +4,14 @@ import { useAuth } from "../context/AuthContext.jsx";
 import api from "../utils/api.jsx";
 
 export default function SignIn() {
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Redirect back to the page they tried to access, or fall back to /dashboard
   const from = location.state?.from?.pathname || "/dashboard";
 
   const handleSubmit = async (e) => {
@@ -32,9 +31,14 @@ export default function SignIn() {
 
   return (
     <div className="form-card">
-      <div style={{ display:"flex", alignItems:"center", gap:9, marginBottom:28 }}>
-        <div className="nav-logo-mark" style={{ width:36, height:36, fontSize:16, borderRadius:11 }}>P</div>
-        <span style={{ fontSize:15, fontWeight:700, letterSpacing:"-.02em" }}>Pollr</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 28 }}>
+        <div
+          className="nav-logo-mark"
+          style={{ width: 36, height: 36, fontSize: 16, borderRadius: 11 }}
+        >
+          P
+        </div>
+        <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-.02em" }}>Pollr</span>
       </div>
 
       <h2>Welcome back</h2>
@@ -67,16 +71,17 @@ export default function SignIn() {
         <button className="btn btn-primary btn-full" disabled={loading}>
           {loading ? (
             <>
-              <span className="spinner" style={{ width:16, height:16, borderWidth:2 }} />
+              <span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} />
               Signing in…
             </>
-          ) : "Sign In"}
+          ) : (
+            "Sign In"
+          )}
         </button>
       </form>
 
       <div className="form-footer">
-        Don't have an account?{" "}
-        <Link to="/signup">Create one free</Link>
+        Don't have an account? <Link to="/signup">Create one free</Link>
       </div>
     </div>
   );
