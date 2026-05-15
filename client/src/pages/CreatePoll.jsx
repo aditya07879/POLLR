@@ -671,7 +671,7 @@ export default function CreatePoll() {
            ── Poll Templates Section ──
            ════════════════════════════════════════════════════════ */
         .cp-templates-section {
-          padding: 24px 36px 20px;
+          padding: 24px 36px 24px;
           border-bottom: 1px solid var(--border, rgba(0,0,0,0.08));
           background: color-mix(in srgb, var(--accent, #6366f1) 2.5%, transparent);
         }
@@ -679,7 +679,7 @@ export default function CreatePoll() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 14px;
+          margin-bottom: 16px;
         }
         .cp-templates-title {
           display: flex;
@@ -696,9 +696,7 @@ export default function CreatePoll() {
           justify-content: center;
           flex-shrink: 0;
         }
-        .cp-templates-title-icon svg {
-          color: var(--accent, #6366f1);
-        }
+        .cp-templates-title-icon svg { color: var(--accent, #6366f1); }
         .cp-templates-title span {
           font-size: 11px;
           font-weight: 700;
@@ -710,81 +708,196 @@ export default function CreatePoll() {
           font-size: 11.5px;
           color: var(--text-dim);
         }
-        .cp-templates-grid {
+
+        /* ── Scrollable row of cards ── */
+        .cp-templates-scroll {
           display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
+          gap: 10px;
+          overflow-x: auto;
+          padding-bottom: 4px;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
         }
-        .cp-template-chip {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 7px 13px 7px 10px;
-          border-radius: 10px;
-          border: 1.5px solid var(--border, rgba(0,0,0,0.11));
+        .cp-templates-scroll::-webkit-scrollbar { display: none; }
+
+        /* ── Individual template card ── */
+        .cp-tpl-card {
+          flex: 0 0 148px;
+          min-width: 148px;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          padding: 13px 13px 11px;
+          border-radius: 14px;
+          border: 1.5px solid var(--border, rgba(0,0,0,0.10));
           background: var(--card-bg, var(--surface, #fff));
-          color: var(--text-muted);
-          font-size: 12.5px;
-          font-weight: 600;
           cursor: pointer;
-          transition: border-color 0.16s, color 0.16s, background 0.16s, box-shadow 0.16s, transform 0.12s;
-          white-space: nowrap;
+          transition: border-color 0.17s, box-shadow 0.17s, transform 0.13s, background 0.17s;
+          text-align: left;
           font-family: inherit;
-          line-height: 1;
           user-select: none;
+          position: relative;
+          overflow: hidden;
         }
-        .cp-template-chip:hover {
+        .cp-tpl-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          opacity: 0;
+          background: color-mix(in srgb, var(--accent, #6366f1) 6%, transparent);
+          transition: opacity 0.17s;
+          pointer-events: none;
+        }
+        .cp-tpl-card:hover {
           border-color: var(--accent, #6366f1);
-          color: var(--accent, #6366f1);
-          background: color-mix(in srgb, var(--accent, #6366f1) 6%, var(--surface, #fff));
+          transform: translateY(-2px);
+          box-shadow:
+            0 4px 14px color-mix(in srgb, var(--accent, #6366f1) 16%, transparent),
+            0 1px 3px rgba(0,0,0,0.06);
+        }
+        .cp-tpl-card:hover::before { opacity: 1; }
+        .cp-tpl-card:active { transform: translateY(0); }
+        .cp-tpl-card:focus-visible {
+          outline: none;
+          border-color: var(--accent, #6366f1);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #6366f1) 22%, transparent);
+        }
+        /* Selected state */
+        .cp-tpl-card.tpl-active {
+          border-color: var(--accent, #6366f1);
+          background: color-mix(in srgb, var(--accent, #6366f1) 7%, var(--surface, #fff));
+          box-shadow:
+            0 0 0 3px color-mix(in srgb, var(--accent, #6366f1) 18%, transparent),
+            0 4px 16px color-mix(in srgb, var(--accent, #6366f1) 12%, transparent);
           transform: translateY(-1px);
-          box-shadow: 0 3px 10px color-mix(in srgb, var(--accent, #6366f1) 15%, transparent);
         }
-        .cp-template-chip:active {
-          transform: translateY(0);
-        }
-        .cp-template-chip.active {
-          border-color: var(--accent, #6366f1);
-          background: color-mix(in srgb, var(--accent, #6366f1) 10%, var(--surface, #fff));
-          color: var(--accent, #6366f1);
-          box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #6366f1) 15%, transparent);
-        }
-        .cp-template-chip.active .cp-template-chip-icon {
-          color: var(--accent, #6366f1);
-        }
-        /* Blank / reset chip specific style */
-        .cp-template-chip.blank-chip {
+        .cp-tpl-card.tpl-active::before { opacity: 0; }
+
+        /* Blank card */
+        .cp-tpl-card.tpl-blank {
           border-style: dashed;
-          color: var(--text-dim);
+          background: transparent;
         }
-        .cp-template-chip.blank-chip:hover {
-          color: var(--text-muted);
-          border-color: var(--text-dim, #aaa);
-          background: color-mix(in srgb, var(--text-dim, #aaa) 5%, var(--surface, #fff));
+        .cp-tpl-card.tpl-blank:hover {
+          border-color: var(--text-muted, #888);
+          background: color-mix(in srgb, var(--text-dim, #aaa) 5%, transparent);
           box-shadow: none;
+          transform: translateY(-1px);
         }
-        .cp-template-chip-icon {
+        .cp-tpl-card.tpl-blank::before { display: none; }
+
+        /* Card top row: icon + selected badge */
+        .cp-tpl-card-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 8px;
+        }
+        .cp-tpl-icon-wrap {
+          width: 30px;
+          height: 30px;
+          border-radius: 8px;
+          background: color-mix(in srgb, var(--accent, #6366f1) 12%, transparent);
+          border: 1px solid color-mix(in srgb, var(--accent, #6366f1) 18%, transparent);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: var(--text-dim);
-          flex-shrink: 0;
-          transition: color 0.16s;
-        }
-        .cp-template-chip:hover .cp-template-chip-icon {
           color: var(--accent, #6366f1);
+          flex-shrink: 0;
+          transition: background 0.17s, border-color 0.17s;
+          font-size: 15px;
+          line-height: 1;
         }
-        .cp-template-chip.blank-chip:hover .cp-template-chip-icon {
-          color: var(--text-muted);
+        .cp-tpl-card.tpl-blank .cp-tpl-icon-wrap {
+          background: color-mix(in srgb, var(--text-dim, #aaa) 10%, transparent);
+          border-color: color-mix(in srgb, var(--text-dim, #aaa) 20%, transparent);
+          color: var(--text-dim);
         }
-        /* Active indicator dot on selected template */
-        .cp-template-active-dot {
+        .cp-tpl-card.tpl-active .cp-tpl-icon-wrap {
+          background: color-mix(in srgb, var(--accent, #6366f1) 18%, transparent);
+        }
+        /* Selected check badge */
+        .cp-tpl-check {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: var(--accent, #6366f1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          opacity: 0;
+          transform: scale(0.5);
+          transition: opacity 0.17s, transform 0.17s;
+        }
+        .cp-tpl-card.tpl-active .cp-tpl-check {
+          opacity: 1;
+          transform: scale(1);
+        }
+        .cp-tpl-check svg { color: #fff; }
+
+        /* Card title */
+        .cp-tpl-title {
+          font-size: 12.5px;
+          font-weight: 700;
+          color: var(--text, inherit);
+          margin: 0 0 3px;
+          line-height: 1.2;
+          letter-spacing: -0.1px;
+        }
+        .cp-tpl-card.tpl-blank .cp-tpl-title { color: var(--text-muted); }
+
+        /* Card description */
+        .cp-tpl-desc {
+          font-size: 11px;
+          color: var(--text-dim);
+          margin: 0 0 9px;
+          line-height: 1.35;
+        }
+
+        /* Mini option previews */
+        .cp-tpl-preview {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin-top: auto;
+        }
+        .cp-tpl-preview-pill {
+          height: 18px;
+          border-radius: 5px;
+          background: color-mix(in srgb, var(--border, rgba(0,0,0,0.1)) 100%, transparent);
+          border: 1px solid color-mix(in srgb, var(--border, rgba(0,0,0,0.08)) 100%, transparent);
+          display: flex;
+          align-items: center;
+          padding: 0 6px;
+          gap: 4px;
+          overflow: hidden;
+        }
+        .cp-tpl-preview-dot {
           width: 5px;
           height: 5px;
           border-radius: 50%;
-          background: var(--accent, #6366f1);
+          background: color-mix(in srgb, var(--accent, #6366f1) 40%, transparent);
           flex-shrink: 0;
-          margin-left: 1px;
+        }
+        .cp-tpl-card.tpl-active .cp-tpl-preview-dot {
+          background: color-mix(in srgb, var(--accent, #6366f1) 65%, transparent);
+        }
+        .cp-tpl-preview-text {
+          font-size: 9.5px;
+          font-weight: 500;
+          color: var(--text-dim);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 1;
+        }
+        .cp-tpl-preview-more {
+          font-size: 9px;
+          color: var(--text-dim);
+          padding-left: 2px;
+          opacity: 0.7;
         }
         /* ═══════════════════════════════════════════════════════ */
 
@@ -800,10 +913,12 @@ export default function CreatePoll() {
           .cp-header { margin-bottom: 20px; }
           .cp-wrapper { padding: 20px 12px 48px; }
           /* Templates responsive */
-          .cp-templates-section { padding: 20px 20px 16px; }
+          .cp-templates-section { padding: 20px 20px 18px; }
           .cp-templates-header { flex-direction: column; align-items: flex-start; gap: 4px; }
           .cp-templates-hint { display: none; }
-          .cp-template-chip { font-size: 12px; padding: 6px 11px 6px 9px; }
+          .cp-tpl-card { flex: 0 0 132px; min-width: 132px; padding: 11px 11px 10px; }
+          .cp-tpl-title { font-size: 12px; }
+          .cp-tpl-desc { font-size: 10.5px; margin-bottom: 7px; }
         }
         @media (max-width: 400px) {
           .cp-header-icon { display: none; }
@@ -862,31 +977,76 @@ export default function CreatePoll() {
                   Pick a starting point — everything stays editable
                 </span>
               </div>
-              <div className="cp-templates-grid">
+              <div className="cp-templates-scroll">
+                {/* Blank / reset card */}
                 <button
                   type="button"
-                  className={`cp-template-chip blank-chip${activeTemplate === null ? "" : ""}`}
+                  className="cp-tpl-card tpl-blank"
                   onClick={() => applyTemplate(POLL_TEMPLATES[0])}
                   title="Start from scratch"
                 >
-                  <span className="cp-template-chip-icon">{POLL_TEMPLATES[0].icon}</span>
-                  Start from Blank
+                  <div className="cp-tpl-card-top">
+                    <div className="cp-tpl-icon-wrap">{POLL_TEMPLATES[0].icon}</div>
+                  </div>
+                  <div className="cp-tpl-title">Blank Poll</div>
+                  <div className="cp-tpl-desc">Start fresh with an empty form</div>
+                  <div className="cp-tpl-preview">
+                    <div className="cp-tpl-preview-pill">
+                      <div className="cp-tpl-preview-dot" />
+                      <span className="cp-tpl-preview-text">Your option…</span>
+                    </div>
+                    <div className="cp-tpl-preview-pill">
+                      <div className="cp-tpl-preview-dot" />
+                      <span className="cp-tpl-preview-text">Your option…</span>
+                    </div>
+                  </div>
                 </button>
 
-                {/* Template chips */}
-                {POLL_TEMPLATES.slice(1).map((tpl) => (
-                  <button
-                    key={tpl.id}
-                    type="button"
-                    className={`cp-template-chip${activeTemplate === tpl.id ? " active" : ""}`}
-                    onClick={() => applyTemplate(tpl)}
-                    title={`Use ${tpl.label} template`}
-                  >
-                    <span className="cp-template-chip-icon">{tpl.icon}</span>
-                    {tpl.label}
-                    {activeTemplate === tpl.id && <span className="cp-template-active-dot" />}
-                  </button>
-                ))}
+                {/* Rich template cards */}
+                {POLL_TEMPLATES.slice(1).map((tpl) => {
+                  const isActive = activeTemplate === tpl.id;
+                  const previewOpts = tpl.options.slice(0, 2);
+                  const extra = tpl.options.length - 2;
+                  return (
+                    <button
+                      key={tpl.id}
+                      type="button"
+                      className={`cp-tpl-card${isActive ? " tpl-active" : ""}`}
+                      onClick={() => applyTemplate(tpl)}
+                      title={`Use ${tpl.label} template`}
+                    >
+                      <div className="cp-tpl-card-top">
+                        <div className="cp-tpl-icon-wrap">{tpl.icon}</div>
+                        <div className="cp-tpl-check">
+                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="cp-tpl-title">{tpl.label}</div>
+                      <div className="cp-tpl-desc">
+                        {tpl.id === "yes-no" && "Simple agreement check"}
+                        {tpl.id === "this-or-that" && "Pick one of two options"}
+                        {tpl.id === "rating" && "Collect star ratings"}
+                        {tpl.id === "quiz" && "Test knowledge with choices"}
+                        {tpl.id === "opinion" && "Gauge audience sentiment"}
+                        {tpl.id === "feedback" && "Confidential satisfaction check"}
+                        {tpl.id === "multiple-choice" && "Let people pick from a list"}
+                      </div>
+                      <div className="cp-tpl-preview">
+                        {previewOpts.map((opt, i) => (
+                          <div className="cp-tpl-preview-pill" key={i}>
+                            <div className="cp-tpl-preview-dot" />
+                            <span className="cp-tpl-preview-text">{opt}</span>
+                          </div>
+                        ))}
+                        {extra > 0 && (
+                          <span className="cp-tpl-preview-more">+{extra} more</span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
