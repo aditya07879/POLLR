@@ -23,6 +23,179 @@ const defaultExpiry = () => {
   return toLocalDT(d);
 };
 
+const POLL_TEMPLATES = [
+  {
+    id: "blank",
+    label: "Blank",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="3" y="3" width="18" height="18" rx="3" />
+      </svg>
+    ),
+    question: "",
+    options: ["", ""],
+    blank: true,
+  },
+  {
+    id: "yes-no",
+    label: "Yes / No",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    ),
+    question: "Do you agree with this?",
+    options: ["Yes", "No"],
+  },
+  {
+    id: "this-or-that",
+    label: "This or That",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
+    ),
+    question: "Which do you prefer?",
+    options: ["Option A", "Option B"],
+  },
+  {
+    id: "rating",
+    label: "Rating Poll",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ),
+    question: "How would you rate your overall experience?",
+    options: ["⭐ Poor", "⭐⭐ Fair", "⭐⭐⭐ Good", "⭐⭐⭐⭐ Great", "⭐⭐⭐⭐⭐ Excellent"],
+  },
+  {
+    id: "quiz",
+    label: "Quiz Poll",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
+    question: "Which of the following is correct?",
+    options: ["Option A", "Option B", "Option C", "Option D"],
+  },
+  {
+    id: "opinion",
+    label: "Opinion Poll",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+      </svg>
+    ),
+    question: "What is your opinion on this topic?",
+    options: ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"],
+  },
+  {
+    id: "feedback",
+    label: "Anonymous Feedback",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+    question: "How satisfied are you with our service?",
+    options: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied"],
+  },
+  {
+    id: "multiple-choice",
+    label: "Multiple Choice",
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <line x1="8" y1="6" x2="21" y2="6" />
+        <line x1="8" y1="12" x2="21" y2="12" />
+        <line x1="8" y1="18" x2="21" y2="18" />
+        <line x1="3" y1="6" x2="3.01" y2="6" />
+        <line x1="3" y1="12" x2="3.01" y2="12" />
+        <line x1="3" y1="18" x2="3.01" y2="18" />
+      </svg>
+    ),
+    question: "Which of these best applies to you?",
+    options: ["Choice A", "Choice B", "Choice C", "Choice D"],
+  },
+];
+
 export default function CreatePoll() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
@@ -30,6 +203,8 @@ export default function CreatePoll() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const [activeTemplate, setActiveTemplate] = useState(null);
 
   const updateOption = (i, val) => {
     const next = [...options];
@@ -90,6 +265,24 @@ export default function CreatePoll() {
   const handleExpiryChange = (e) => {
     setExpiresAt(e.target.value);
     setActivePreset(null);
+  };
+
+  const applyTemplate = (template) => {
+    if (template.blank) {
+      setQuestion("");
+      setOptions(["", ""]);
+      setActiveTemplate(null);
+      return;
+    }
+    setActiveTemplate(template.id);
+    setQuestion(template.question);
+
+    const tplOptions = template.options.slice(0, 6);
+    setOptions(
+      tplOptions.length >= 2
+        ? tplOptions
+        : [...tplOptions, ...Array(2 - tplOptions.length).fill("")]
+    );
   };
 
   return (
@@ -474,6 +667,127 @@ export default function CreatePoll() {
         /* Buttons reuse existing .btn .btn-ghost .btn-primary classes */
         .btn { display: inline-flex; align-items: center; gap: 7px; }
 
+        /* ════════════════════════════════════════════════════════
+           ── Poll Templates Section ──
+           ════════════════════════════════════════════════════════ */
+        .cp-templates-section {
+          padding: 24px 36px 20px;
+          border-bottom: 1px solid var(--border, rgba(0,0,0,0.08));
+          background: color-mix(in srgb, var(--accent, #6366f1) 2.5%, transparent);
+        }
+        .cp-templates-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 14px;
+        }
+        .cp-templates-title {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+        }
+        .cp-templates-title-icon {
+          width: 22px;
+          height: 22px;
+          border-radius: 6px;
+          background: color-mix(in srgb, var(--accent, #6366f1) 14%, transparent);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .cp-templates-title-icon svg {
+          color: var(--accent, #6366f1);
+        }
+        .cp-templates-title span {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+        }
+        .cp-templates-hint {
+          font-size: 11.5px;
+          color: var(--text-dim);
+        }
+        .cp-templates-grid {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .cp-template-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 13px 7px 10px;
+          border-radius: 10px;
+          border: 1.5px solid var(--border, rgba(0,0,0,0.11));
+          background: var(--card-bg, var(--surface, #fff));
+          color: var(--text-muted);
+          font-size: 12.5px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: border-color 0.16s, color 0.16s, background 0.16s, box-shadow 0.16s, transform 0.12s;
+          white-space: nowrap;
+          font-family: inherit;
+          line-height: 1;
+          user-select: none;
+        }
+        .cp-template-chip:hover {
+          border-color: var(--accent, #6366f1);
+          color: var(--accent, #6366f1);
+          background: color-mix(in srgb, var(--accent, #6366f1) 6%, var(--surface, #fff));
+          transform: translateY(-1px);
+          box-shadow: 0 3px 10px color-mix(in srgb, var(--accent, #6366f1) 15%, transparent);
+        }
+        .cp-template-chip:active {
+          transform: translateY(0);
+        }
+        .cp-template-chip.active {
+          border-color: var(--accent, #6366f1);
+          background: color-mix(in srgb, var(--accent, #6366f1) 10%, var(--surface, #fff));
+          color: var(--accent, #6366f1);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #6366f1) 15%, transparent);
+        }
+        .cp-template-chip.active .cp-template-chip-icon {
+          color: var(--accent, #6366f1);
+        }
+        /* Blank / reset chip specific style */
+        .cp-template-chip.blank-chip {
+          border-style: dashed;
+          color: var(--text-dim);
+        }
+        .cp-template-chip.blank-chip:hover {
+          color: var(--text-muted);
+          border-color: var(--text-dim, #aaa);
+          background: color-mix(in srgb, var(--text-dim, #aaa) 5%, var(--surface, #fff));
+          box-shadow: none;
+        }
+        .cp-template-chip-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-dim);
+          flex-shrink: 0;
+          transition: color 0.16s;
+        }
+        .cp-template-chip:hover .cp-template-chip-icon {
+          color: var(--accent, #6366f1);
+        }
+        .cp-template-chip.blank-chip:hover .cp-template-chip-icon {
+          color: var(--text-muted);
+        }
+        /* Active indicator dot on selected template */
+        .cp-template-active-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: var(--accent, #6366f1);
+          flex-shrink: 0;
+          margin-left: 1px;
+        }
+        /* ═══════════════════════════════════════════════════════ */
+
         /* ── Responsive ── */
         @media (max-width: 600px) {
           .cp-section { padding: 24px 20px; }
@@ -485,6 +799,11 @@ export default function CreatePoll() {
           .cp-expiry-info { display: none; }
           .cp-header { margin-bottom: 20px; }
           .cp-wrapper { padding: 20px 12px 48px; }
+          /* Templates responsive */
+          .cp-templates-section { padding: 20px 20px 16px; }
+          .cp-templates-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+          .cp-templates-hint { display: none; }
+          .cp-template-chip { font-size: 12px; padding: 6px 11px 6px 9px; }
         }
         @media (max-width: 400px) {
           .cp-header-icon { display: none; }
@@ -517,6 +836,60 @@ export default function CreatePoll() {
 
         <div className="cp-card">
           <form onSubmit={handleSubmit}>
+            <div className="cp-templates-section">
+              <div className="cp-templates-header">
+                <div className="cp-templates-title">
+                  <div className="cp-templates-title-icon">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect x="3" y="3" width="7" height="7" rx="1" />
+                      <rect x="14" y="3" width="7" height="7" rx="1" />
+                      <rect x="3" y="14" width="7" height="7" rx="1" />
+                      <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                  </div>
+                  <span>Templates</span>
+                </div>
+                <span className="cp-templates-hint">
+                  Pick a starting point — everything stays editable
+                </span>
+              </div>
+              <div className="cp-templates-grid">
+                <button
+                  type="button"
+                  className={`cp-template-chip blank-chip${activeTemplate === null ? "" : ""}`}
+                  onClick={() => applyTemplate(POLL_TEMPLATES[0])}
+                  title="Start from scratch"
+                >
+                  <span className="cp-template-chip-icon">{POLL_TEMPLATES[0].icon}</span>
+                  Start from Blank
+                </button>
+
+                {/* Template chips */}
+                {POLL_TEMPLATES.slice(1).map((tpl) => (
+                  <button
+                    key={tpl.id}
+                    type="button"
+                    className={`cp-template-chip${activeTemplate === tpl.id ? " active" : ""}`}
+                    onClick={() => applyTemplate(tpl)}
+                    title={`Use ${tpl.label} template`}
+                  >
+                    <span className="cp-template-chip-icon">{tpl.icon}</span>
+                    {tpl.label}
+                    {activeTemplate === tpl.id && <span className="cp-template-active-dot" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {error && (
               <div className="cp-error">
                 <svg
