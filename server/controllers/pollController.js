@@ -18,7 +18,7 @@ exports.createPoll = async (req, res) => {
     const poll = await Poll.create({
       question,
       options: options.map((text) => ({ text, votes: 0 })),
-      expiresAt: new Date(expiresAt),
+      expiresAt: new Date(expiresAt + "+05:30"),   
       createdBy: req.userId,
     });
     res.status(201).json(poll);

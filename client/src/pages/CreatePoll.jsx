@@ -1002,7 +1002,6 @@ export default function CreatePoll() {
                   </div>
                 </button>
 
-                {/* Rich template cards */}
                 {POLL_TEMPLATES.slice(1).map((tpl) => {
                   const isActive = activeTemplate === tpl.id;
                   const previewOpts = tpl.options.slice(0, 2);
@@ -1018,7 +1017,16 @@ export default function CreatePoll() {
                       <div className="cp-tpl-card-top">
                         <div className="cp-tpl-icon-wrap">{tpl.icon}</div>
                         <div className="cp-tpl-check">
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <svg
+                            width="9"
+                            height="9"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -1040,9 +1048,7 @@ export default function CreatePoll() {
                             <span className="cp-tpl-preview-text">{opt}</span>
                           </div>
                         ))}
-                        {extra > 0 && (
-                          <span className="cp-tpl-preview-more">+{extra} more</span>
-                        )}
+                        {extra > 0 && <span className="cp-tpl-preview-more">+{extra} more</span>}
                       </div>
                     </button>
                   );
