@@ -4,7 +4,7 @@ const api = axios.create({
   baseURL: "https://pollr-tcvr.onrender.com/api",
 });
 
-// Voter token for duplicate vote prevention (no login required)
+
 const getVoterToken = () => {
   let t = localStorage.getItem("voterToken");
   if (!t) {

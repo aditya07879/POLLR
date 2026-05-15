@@ -20,7 +20,7 @@ export default function useCountdown(expiresAt) {
       const mins = Math.floor((diff % 3600000) / 60000);
       const secs = Math.floor((diff % 60000) / 1000);
 
-      setUrgent(diff < 300000); // < 5 min
+      setUrgent(diff < 300000); 
 
       if (days > 0) setTimeLeft(`${days}d ${hours}h remaining`);
       else if (hours > 0) setTimeLeft(`${hours}h ${mins}m remaining`);
