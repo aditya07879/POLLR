@@ -160,7 +160,13 @@ function DemoVideoModal({ onClose }) {
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
-        <video className="demo-modal-video" src="/demo.mp4" autoPlay controls playsInline />
+        <video
+          className="demo-modal-video"
+          src="https://res.cloudinary.com/dd4jzc1ht/video/upload/v1778884774/demo_qtwvgy.mp4"
+          autoPlay
+          controls
+          playsInline
+        />
       </div>
     </div>
   );
